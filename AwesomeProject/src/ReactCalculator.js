@@ -18,10 +18,10 @@ import {
 
 // Define the input buttons that will be displayed in the calculator.
 const inputButtons = [
-    [1, 2, 3, '/'],
-    [4, 5, 6, '*'],
-    [7, 8, 9, '-'],
-    [0,'C','.', '=', '+']
+    [1, 2, 3, '/', 'CE'],
+    [4, 5, 6, '*', 'C'],
+    [7, 8, 9, '-', 'sqrt'],
+    [0,'.','+/-', '=', '+']
 ];
 
 
@@ -122,6 +122,29 @@ export default class AwesomeProject extends Component {
                     selectedSymbol: null
                 });
                 break;
+            case 'C':
+                inputValue = Math.floor(this.state.inputValue / 10);
+                this.setState({
+                    inputValue: inputValue
+                })
+            break;
+            case 'CE':
+                this.setState({
+                inputValue: 0
+                })
+            break;
+            case '+/-':
+                inputValue = (this.state.inputValue * (-1.0))
+                this.setState({
+                inputValue: inputValue
+                })
+            break;
+            case 'sqrt':
+                inputValue = Math.sqrt(this.state.inputValue)
+                this.setState({
+                inputValue: inputValue
+                })
+            break;
         }
     }
 

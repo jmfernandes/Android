@@ -39,7 +39,7 @@ export default class AwesomeProject extends Component {
         return (
             <View style={Style.rootContainer}>
                 <View style={Style.displayContainer}>
-                <Text style={Style.displayText}>{this.state.inputValue}</Text>
+                    <Text style={Style.displayText}>{this.state.inputValue}</Text>
                 </View>
                 <View style={Style.inputContainer}>
                     {this._renderInputButtons()}

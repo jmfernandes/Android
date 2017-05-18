@@ -1,0 +1,1 @@
+import FireBaseApp from './src/firebase_main';

@@ -18,10 +18,12 @@ import {
 
 // Define the input buttons that will be displayed in the calculator.
 const inputButtons = [
-    [1, 2, 3, '/', 'CE'],
-    [4, 5, 6, '*', 'C'],
-    [7, 8, 9, '-', 'sqrt'],
-    [0,'.','+/-', '=', '+']
+    ['C','CE','(',')'],
+    ['abs','^2','sqrt','/'],
+    [1, 2, 3, '*'],
+    [4, 5, 6, '-'],
+    [7, 8, 9, '+'],
+    ['.',0,'+/-', '=']
 ];
 
 
@@ -30,14 +32,16 @@ export default class AwesomeProject extends Component {
         super(props);
         
         this.state = {
-            previousInputValue: 0,
-            inputValue: 0,
-            selectedSymbol: null
+            previousInputValue: null,
+            inputValue: 0
         }
     }
     render() {
         return (
             <View style={Style.rootContainer}>
+                <View style={Style.previousContainer}>
+                    <Text style={Style.displayText}>{this.state.previousInputValue}</Text>
+                </View>
                 <View style={Style.displayContainer}>
                     <Text style={Style.displayText}>{this.state.inputValue}</Text>
                 </View>
@@ -64,7 +68,6 @@ export default class AwesomeProject extends Component {
                 inputRow.push(
                     <InputButton 
                       value={input}
-                      //highlight={this.state.selectedSymbol === input} 
                       onPress={this._onInputButtonPressed.bind(this, input)} 
                       key={r + "-" + i} />
                 );
@@ -109,15 +112,11 @@ export default class AwesomeProject extends Component {
             case '-':
                 if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
                 this.setState({
-                    selectedSymbol: str,
-                    previousInputValue: this.state.inputValue,
                     inputValue: this.state.inputValue
                 });
                 }
                 else{
                   this.setState({
-                    selectedSymbol: str,
-                    previousInputValue: this.state.inputValue,
                     inputValue: this.state.inputValue + str
                 });                  
                 }
@@ -126,36 +125,33 @@ export default class AwesomeProject extends Component {
                 if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
                     return;
                 }
-                let symbol = this.state.selectedSymbol,
-                    inputValue = this.state.inputValue,
+                let inputValue = this.state.inputValue,
                     previousInputValue = this.state.previousInputValue;
-
-                if (!symbol) {
+                let numarray = [this.state.inputValue.indexOf('*'),this.state.inputValue.indexOf('/'),this.state.inputValue.indexOf('+'),this.state.inputValue.indexOf('-')]
+                if (Math.max.apply(Math, numarray) == -1) {
                     return;
                 }
 
                 this.setState({
-                    previousInputValue: inputValue,
-                    inputValue: String(eval(inputValue)),
-                    selectedSymbol: null
+                    previousInputValue: inputValue+' = '+String(eval(inputValue)),
+                    inputValue: String(eval(inputValue))
                 });
                 break;
             case 'C':
-                if (this.state.inputValue.length == 1 || this.state.inputValue == 0 ){
+                if (this.state.inputValue.length == 1 || this.state.inputValue == 0 || String(this.state.inputValue).contains('NaN') ){
                 this.setState({
                     inputValue: 0
                 })
                 }
                 else{
-                inputValue = String(this.state.inputValue).substring(0, String(this.state.inputValue).length-1)
                 this.setState({
-                    inputValue: inputValue
+                    inputValue: String(this.state.inputValue).substring(0, String(this.state.inputValue).length-1)
                 })
                 }
             break;
             case 'CE':
-                this.setState({
-                inputValue: 0
+                    this.setState({
+                    inputValue: 0
                 })
             break;
             case '+/-':
@@ -169,7 +165,7 @@ export default class AwesomeProject extends Component {
                 })
             break;
             case '.':
-                let numarray = [this.state.inputValue.indexOf('*'),this.state.inputValue.indexOf('/'),this.state.inputValue.indexOf('+'),this.state.inputValue.indexOf('-')]
+                numarray = [this.state.inputValue.indexOf('*'),this.state.inputValue.indexOf('/'),this.state.inputValue.indexOf('+'),this.state.inputValue.indexOf('-')]
                 
                 if (!this.state.inputValue.substring(Math.max.apply(Math, numarray)+1, this.state.inputValue.length).includes("."))
                 this.setState({

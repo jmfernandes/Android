@@ -64,7 +64,7 @@ export default class AwesomeProject extends Component {
                 inputRow.push(
                     <InputButton 
                       value={input}
-                      highlight={this.state.selectedSymbol === input} 
+                      //highlight={this.state.selectedSymbol === input} 
                       onPress={this._onInputButtonPressed.bind(this, input)} 
                       key={r + "-" + i} />
                 );
@@ -88,7 +88,13 @@ export default class AwesomeProject extends Component {
     }
     //this is where the set state acts
     _handleNumberInput(num) {
-        let inputValue = (this.state.inputValue * 10) + num;
+            let inputValue = 0
+        if (this.state.inputValue == 0 || String(this.state.inputValue).contains('NaN')){
+            inputValue = String(num);
+        }
+        else{
+            inputValue = String(this.state.inputValue) + String(num);
+        }
 
         this.setState({
             inputValue: inputValue
@@ -101,13 +107,25 @@ export default class AwesomeProject extends Component {
             case '*':
             case '+':
             case '-':
+                if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
                 this.setState({
                     selectedSymbol: str,
                     previousInputValue: this.state.inputValue,
-                    inputValue: 0
+                    inputValue: this.state.inputValue
                 });
+                }
+                else{
+                  this.setState({
+                    selectedSymbol: str,
+                    previousInputValue: this.state.inputValue,
+                    inputValue: this.state.inputValue + str
+                });                  
+                }
                 break;
             case '=':
+                if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
+                    return;
+                }
                 let symbol = this.state.selectedSymbol,
                     inputValue = this.state.inputValue,
                     previousInputValue = this.state.previousInputValue;
@@ -117,16 +135,23 @@ export default class AwesomeProject extends Component {
                 }
 
                 this.setState({
-                    previousInputValue: 0,
-                    inputValue: eval(previousInputValue + symbol + inputValue),
+                    previousInputValue: inputValue,
+                    inputValue: String(eval(inputValue)),
                     selectedSymbol: null
                 });
                 break;
             case 'C':
-                inputValue = Math.floor(this.state.inputValue / 10);
+                if (this.state.inputValue.length == 1 || this.state.inputValue == 0 ){
+                this.setState({
+                    inputValue: 0
+                })
+                }
+                else{
+                inputValue = String(this.state.inputValue).substring(0, String(this.state.inputValue).length-1)
                 this.setState({
                     inputValue: inputValue
                 })
+                }
             break;
             case 'CE':
                 this.setState({
@@ -134,17 +159,23 @@ export default class AwesomeProject extends Component {
                 })
             break;
             case '+/-':
-                inputValue = (this.state.inputValue * (-1.0))
                 this.setState({
-                inputValue: inputValue
+                inputValue: this.state.inputValue * (-1.0)
                 })
             break;
             case 'sqrt':
-                inputValue = Math.sqrt(this.state.inputValue)
                 this.setState({
-                inputValue: inputValue
+                inputValue: Math.sqrt(this.state.inputValue)
                 })
             break;
+            case '.':
+                let numarray = [this.state.inputValue.indexOf('*'),this.state.inputValue.indexOf('/'),this.state.inputValue.indexOf('+'),this.state.inputValue.indexOf('-')]
+                
+                if (!this.state.inputValue.substring(Math.max.apply(Math, numarray)+1, this.state.inputValue.length).includes("."))
+                this.setState({
+                inputValue: this.state.inputValue + '.'
+                })
+            break;            
         }
     }
 

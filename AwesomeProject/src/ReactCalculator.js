@@ -14,6 +14,7 @@ import {
   View,
   TextInput,
   Button,
+  Alert
 } from 'react-native';
 
 // Define the input buttons that will be displayed in the calculator.
@@ -112,7 +113,7 @@ export default class AwesomeProject extends Component {
             case '-':
                 if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
                 this.setState({
-                    inputValue: this.state.inputValue
+                    inputValue: this.state.inputValue.replace(/.$/,str)
                 });
                 }
                 else{
@@ -122,6 +123,10 @@ export default class AwesomeProject extends Component {
                 }
                 break;
             case '=':
+                if (String((this.state.inputValue.match(/\(/) || []).length) != String((this.state.inputValue.match(/\)/) || []).length)){
+                    Alert.alert("Uneven number of parenthesis")
+                    return;
+                }
                 if(['/','*','+','-'].indexOf(String(this.state.inputValue).slice(-1)) > -1){
                     return;
                 }
@@ -136,6 +141,7 @@ export default class AwesomeProject extends Component {
                     previousInputValue: inputValue+' = '+String(eval(inputValue)),
                     inputValue: String(eval(inputValue))
                 });
+
                 break;
             case 'C':
                 if (this.state.inputValue.length == 1 || this.state.inputValue == 0 || String(this.state.inputValue).contains('NaN') ){
@@ -156,12 +162,12 @@ export default class AwesomeProject extends Component {
             break;
             case '+/-':
                 this.setState({
-                inputValue: this.state.inputValue * (-1.0)
+                    inputValue: this.state.inputValue * (-1.0)
                 })
             break;
             case 'sqrt':
                 this.setState({
-                inputValue: Math.sqrt(this.state.inputValue)
+                    inputValue: Math.sqrt(this.state.inputValue)
                 })
             break;
             case '.':
@@ -169,8 +175,39 @@ export default class AwesomeProject extends Component {
                 
                 if (!this.state.inputValue.substring(Math.max.apply(Math, numarray)+1, this.state.inputValue.length).includes("."))
                 this.setState({
-                inputValue: this.state.inputValue + '.'
+                    inputValue: this.state.inputValue + '.'
                 })
+            break;
+            case '(':
+                if (this.state.inputValue == 0 || String(this.state.inputValue).contains('NaN')){
+                this.setState({
+                    inputValue: '('
+                })
+                }
+                else{
+                    if (isNaN(String(this.state.inputValue).slice(-1))){
+                this.setState({
+                    inputValue: this.state.inputValue+'('
+                })
+                }
+                else{
+                this.setState({
+                    inputValue: this.state.inputValue+'*('
+                })                    
+                }
+                }
+            break;
+            case ')':
+                if (this.state.inputValue == 0 || String(this.state.inputValue).contains('NaN')){
+                this.setState({
+                    inputValue: ')'
+                })
+                }
+                else{
+                this.setState({
+                    inputValue: this.state.inputValue+')'
+                })
+                }
             break;            
         }
     }

@@ -24,6 +24,7 @@ const inputButtons = [
 ];
 
 //adding extra lines
+//another
 
 export default class AwesomeProject extends Component {
       constructor(props) {

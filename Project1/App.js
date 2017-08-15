@@ -168,6 +168,11 @@ export default class AwesomeProject extends Component {
                     inputValue: Math.sqrt(this.state.inputValue)
                 })
             break;
+            case '^2':
+                this.setState({
+                    inputValue: this.state.inputValue * this.state.inputValue
+                })
+            break;
             case '.':
                 numarray = [this.state.inputValue.indexOf('*'),this.state.inputValue.indexOf('/'),this.state.inputValue.indexOf('+'),this.state.inputValue.indexOf('-')]
 
